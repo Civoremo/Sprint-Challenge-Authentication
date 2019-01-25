@@ -7,13 +7,13 @@ const configureRoutes = require("../config/routes.js");
 const server = express();
 
 server.use(helmet());
-server.use(cors());
+server.use(
+    cors({
+        credentials: true,
+        origin: "http://localhost:3000",
+    })
+);
 server.use(express.json());
-
-// {
-//   credentials: true,
-//   origin: "http://localhost:3300",
-// }
 
 configureRoutes(server);
 

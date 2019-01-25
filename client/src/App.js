@@ -1,11 +1,31 @@
 import React, { Component } from "react";
 import "./App.css";
 import { Link, Route } from "react-router-dom";
+import styled from "styled-components";
 import axios from "axios";
 
+import HomeScreen from "./components/home";
 import RegistrationForm from "./components/registrationForm";
 import LoginUser from "./components/loginUser";
 import Jokes from "./components/jokes";
+
+// styled components
+const NavBar = styled.nav`
+    background-color: #222222;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    margin-bottom: 30px;
+`;
+
+const NavLinks = styled.div`
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+`;
 
 class App extends Component {
     constructor(props) {
@@ -35,23 +55,11 @@ class App extends Component {
             })
                 .then(id => {
                     this.loginUser();
-
-                    // axios({
-                    //     method: "post",
-                    //     url: "http://localhost:3300/api/login",
-                    //     data: {
-                    //         username: this.state.username,
-                    //         password: this.state.password,
-                    //     },
-                    // })
-                    //     .then(token => {
-                    //         console.log(token.data);
-                    //         localStorage.setItem("token", token.data);
-                    //         window.location.replace("/jokes");
-                    //     })
-                    //     .catch(err => {
-                    //         alert(err, "login failed");
-                    //     });
+                    alert("Registered and Logged in successful!");
+                    this.setState({
+                        username: "",
+                        password: "",
+                    });
                 })
                 .catch(err => {
                     alert(err, "registration failed");
@@ -74,6 +82,7 @@ class App extends Component {
                 .then(token => {
                     console.log(token.data);
                     localStorage.setItem("token", token.data);
+                    alert("Login successful!");
                     window.location.replace("/jokes");
                 })
                 .catch(err => {
@@ -84,22 +93,39 @@ class App extends Component {
         }
     };
 
+    logoutUser = e => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        alert("Logout seccessful!");
+        window.location.replace("/");
+    };
+
     render() {
         return (
             <div className="App">
-                <nav>
-                    <div>
+                <NavBar>
+                    <NavLinks>
                         <Link to="/jokes">Jokes</Link>
-                    </div>
-                    <div>
+                    </NavLinks>
+                    <NavLinks>
                         <Link to="/login">Login</Link>
-                    </div>
-                    <div>
+                    </NavLinks>
+                    <NavLinks>
+                        <Link to="" onClick={this.logoutUser}>
+                            Logout
+                        </Link>
+                    </NavLinks>
+                    <NavLinks>
                         <Link to="/register">Register</Link>
-                    </div>
-                </nav>
+                    </NavLinks>
+                </NavBar>
 
                 <main>
+                    <Route
+                        exact
+                        path="/"
+                        render={props => <HomeScreen {...props} />}
+                    />
                     <Route
                         path="/register"
                         render={props => (

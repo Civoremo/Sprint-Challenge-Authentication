@@ -1,4 +1,40 @@
 import React from "react";
+import styled from "styled-components";
+
+// styled components
+const FormContainer = styled.div`
+    background-color: lightgray;
+    width: 300px;
+    padding: 20px 10px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+`;
+
+const FormStyled = styled.form`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const InputStyled = styled.input`
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    width: 150px;
+    text-align: center;
+`;
+
+const SubmitButton = styled.button`
+    width: 80px;
+    height: 30px;
+    font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+    }
+`;
 
 class RegistrationForm extends React.Component {
     constructor(props) {
@@ -8,9 +44,9 @@ class RegistrationForm extends React.Component {
 
     render() {
         return (
-            <div>
-                <form onSubmit={this.props.registerUser}>
-                    <input
+            <FormContainer>
+                <FormStyled onSubmit={this.props.registerUser}>
+                    <InputStyled
                         type="text"
                         placeholder="username"
                         name="username"
@@ -19,7 +55,7 @@ class RegistrationForm extends React.Component {
                         required={true}
                         autoComplete="false"
                     />
-                    <input
+                    <InputStyled
                         type="password"
                         placeholder="password"
                         name="password"
@@ -28,9 +64,11 @@ class RegistrationForm extends React.Component {
                         required={true}
                         autoComplete="false"
                     />
-                    <button onClick={this.props.registerUser}>Register</button>
-                </form>
-            </div>
+                    <SubmitButton onClick={this.props.registerUser}>
+                        Register
+                    </SubmitButton>
+                </FormStyled>
+            </FormContainer>
         );
     }
 }
