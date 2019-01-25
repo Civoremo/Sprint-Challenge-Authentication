@@ -1,5 +1,10 @@
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
+const knex = require("knex");
+const knexConfig = require("../knexfile.js");
+const jwt = require("jsonwebtoken");
+
+db = knex(knexConfig.development);
 
 const { authenticate } = require("../auth/authenticate");
 
@@ -14,25 +19,56 @@ function register(req, res) {
     const creds = req.body;
     const hashedPassword = bcrypt.hashSync(creds.password, 14);
     creds.password = hashedPassword;
+    console.log(creds);
 
-    axios
-        .post("http://localhost:3300", creds)
+    db("users")
+        .insert(creds)
         .then(id => {
             res.status(201).json(id);
         })
         .catch(err => {
             res.status(500).json({
-                message: "Error registering User",
+                message: "Error registering user",
                 error: err,
             });
         });
 }
 
+function generateToken(user) {
+    const payload = {
+        id: user.id,
+        username: user.username,
+    };
+
+    const secret = process.env.JWT_SECRET;
+
+    const options = {
+        expiresIn: "1h",
+    };
+
+    return jwt.sign(payload, secret, options);
+}
+
 function login(req, res) {
     // implement user login
     const creds = req.body;
-
-    // axios.get
+    console.log(creds);
+    db("users")
+        .where({ username: creds.username })
+        .first()
+        .then(user => {
+            console.log(user);
+            if (user && bcrypt.compareSync(creds.password, user.password)) {
+                const token = generateToken(user);
+                res.status(200).json(token);
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                message: "Error login in user",
+                error: err,
+            });
+        });
 }
 
 function getJokes(req, res) {
