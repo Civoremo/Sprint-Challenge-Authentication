@@ -70,9 +70,6 @@ class App extends Component {
                             alert("Registered and Logged in successful!");
                             localStorage.setItem("token", token.data);
                             window.location.replace("/jokes");
-                            this.setState({
-                                logged: true,
-                            });
                         })
                         .catch(err => {
                             alert(err, "Login failed");
@@ -106,9 +103,6 @@ class App extends Component {
                     localStorage.setItem("token", token.data);
                     alert("Login successful!");
                     window.location.replace("/jokes");
-                    this.setState({
-                        logged: true,
-                    });
                 })
                 .catch(err => {
                     this.setState({
@@ -141,7 +135,7 @@ class App extends Component {
                     </NavLinks>
                     <NavLinks
                         defaultValue={
-                            this.state.logged === false ? "block" : "none"
+                            !localStorage.getItem("token") ? "block" : "none"
                         }
                         type="text"
                     >
@@ -149,7 +143,7 @@ class App extends Component {
                     </NavLinks>
                     <NavLinks
                         defaultValue={
-                            this.state.logged === true ? "block" : "none"
+                            localStorage.getItem("token") ? "block" : "none"
                         }
                         type="text"
                     >
