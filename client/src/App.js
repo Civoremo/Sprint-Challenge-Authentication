@@ -54,14 +54,29 @@ class App extends Component {
                 },
             })
                 .then(id => {
-                    this.loginUser();
-                    alert("Registered and Logged in successful!");
+                    axios({
+                        method: "post",
+                        url: "http://localhost:3300/api/login",
+                        data: {
+                            username: this.state.username,
+                            password: this.state.password,
+                        },
+                    })
+                        .then(token => {
+                            console.log(token.data);
+                            alert("Registered and Logged in successful!");
+                            localStorage.setItem("token", token.data);
+                            window.location.replace("/jokes");
+                        })
+                        .catch(err => {
+                            alert(err, "Login failed");
+                        });
+                })
+                .catch(err => {
                     this.setState({
                         username: "",
                         password: "",
                     });
-                })
-                .catch(err => {
                     alert(err, "registration failed");
                 });
         } else {
@@ -70,6 +85,7 @@ class App extends Component {
     };
 
     loginUser = e => {
+        e.preventDefault();
         if (this.state.username && this.state.password) {
             axios({
                 method: "post",
@@ -86,6 +102,10 @@ class App extends Component {
                     window.location.replace("/jokes");
                 })
                 .catch(err => {
+                    this.setState({
+                        username: "",
+                        password: "",
+                    });
                     alert(err, "Login failed");
                 });
         } else {
