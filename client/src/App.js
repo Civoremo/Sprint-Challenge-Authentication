@@ -21,6 +21,8 @@ const NavBar = styled.nav`
 `;
 
 const NavLinks = styled.div`
+    display: ${props => props.defaultValue};
+
     &:hover {
         text-decoration: underline;
         cursor: pointer;
@@ -33,6 +35,7 @@ class App extends Component {
         this.state = {
             username: "",
             password: "",
+            logged: false,
         };
     }
 
@@ -67,6 +70,9 @@ class App extends Component {
                             alert("Registered and Logged in successful!");
                             localStorage.setItem("token", token.data);
                             window.location.replace("/jokes");
+                            this.setState({
+                                logged: true,
+                            });
                         })
                         .catch(err => {
                             alert(err, "Login failed");
@@ -100,6 +106,9 @@ class App extends Component {
                     localStorage.setItem("token", token.data);
                     alert("Login successful!");
                     window.location.replace("/jokes");
+                    this.setState({
+                        logged: true,
+                    });
                 })
                 .catch(err => {
                     this.setState({
@@ -118,6 +127,9 @@ class App extends Component {
         localStorage.removeItem("token");
         alert("Logout seccessful!");
         window.location.replace("/");
+        this.setState({
+            logged: false,
+        });
     };
 
     render() {
@@ -127,10 +139,20 @@ class App extends Component {
                     <NavLinks>
                         <Link to="/jokes">Jokes</Link>
                     </NavLinks>
-                    <NavLinks>
+                    <NavLinks
+                        defaultValue={
+                            this.state.logged === false ? "block" : "none"
+                        }
+                        type="text"
+                    >
                         <Link to="/login">Login</Link>
                     </NavLinks>
-                    <NavLinks>
+                    <NavLinks
+                        defaultValue={
+                            this.state.logged === true ? "block" : "none"
+                        }
+                        type="text"
+                    >
                         <Link to="" onClick={this.logoutUser}>
                             Logout
                         </Link>
