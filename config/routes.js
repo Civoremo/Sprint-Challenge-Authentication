@@ -19,7 +19,6 @@ function register(req, res) {
     const creds = req.body;
     const hashedPassword = bcrypt.hashSync(creds.password, 14);
     creds.password = hashedPassword;
-    console.log(creds);
 
     db("users")
         .insert(creds)
@@ -52,12 +51,10 @@ function generateToken(user) {
 function login(req, res) {
     // implement user login
     const creds = req.body;
-    console.log(creds);
     db("users")
         .where({ username: creds.username })
         .first()
         .then(user => {
-            console.log(user);
             if (user && bcrypt.compareSync(creds.password, user.password)) {
                 const token = generateToken(user);
                 res.status(200).json(token);
